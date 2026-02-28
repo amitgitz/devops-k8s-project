@@ -13,9 +13,6 @@ permissions:
   contents: write
 
 jobs:
-  # ──────────────────────────────────────
-  # Build, Push & Update GitOps Manifests
-  # ──────────────────────────────────────
   build-and-deploy:
     name: Build & Deploy
     runs-on: ubuntu-latest
@@ -54,9 +51,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # ──────────────────────────────────────
-      # Update image tags in GitOps manifests
-      # ──────────────────────────────────────
       - name: Update Backend Image Tag
         run: |
           sed -i "s|image: registry.reachinbox.xyz/test-scale/backend:.*|image: registry.reachinbox.xyz/test-scale/backend:${{ steps.set_git_hash.outputs.git_hash }}|" gitops/base/backend.yml
