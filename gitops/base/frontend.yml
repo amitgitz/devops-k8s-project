@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: amitchoudhary47/devops-frontend:latest
+          image: registry.reachinbox.xyz/test-scale/frontend:latest
           ports:
             - containerPort: 80
           resources:
