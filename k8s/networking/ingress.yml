@@ -1,4 +1,6 @@
-# GCE Ingress for GKE
+# ──────────────────────────────────────
+# App Ingress — app.mailscale.online
+# ──────────────────────────────────────
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -6,34 +8,67 @@ metadata:
   namespace: devops
   annotations:
     kubernetes.io/ingress.class: "gce"
-    kubernetes.io/ingress.global-static-ip-name: "dodo-ip"
-    networking.gke.io/managed-certificates: "dodo-cert"
+    networking.gke.io/managed-certificates: "app-cert"
 spec:
   rules:
-    - host: app.hyperkube.cloud
+    - host: app.mailscale.online
       http:
         paths:
-          - path: /api
-            pathType: Prefix
+          - path: /api/*
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: backend
                 port:
                   number: 80
-          - path: /
-            pathType: Prefix
+          - path: /*
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: frontend
                 port:
                   number: 80
 ---
-# Managed Certificate (GCP)
+# Managed Certificate for app.mailscale.online
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: devops-cert
+  name: app-cert
   namespace: devops
 spec:
   domains:
-    - app.hyperkube.cloud
+    - app.mailscale.online
+---
+# ──────────────────────────────────────
+# ArgoCD Ingress — argocd.mailscale.online
+# ──────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: "argocd-cert"
+spec:
+  rules:
+    - host: argocd.mailscale.online
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
+---
+# Managed Certificate for argocd.mailscale.online
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: argocd-cert
+  namespace: argocd
+spec:
+  domains:
+    - argocd.mailscale.online

@@ -1,0 +1,38 @@
+# App Ingress — app.mailscale.online
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devops-ingress
+  namespace: devops
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: "app-cert"
+spec:
+  rules:
+    - host: app.mailscale.online
+      http:
+        paths:
+          - path: /api/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+---
+# Managed Certificate for app.mailscale.online
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: app-cert
+  namespace: devops
+spec:
+  domains:
+    - app.mailscale.online

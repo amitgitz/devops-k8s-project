@@ -1,0 +1,16 @@
+# Devops Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devops
+  labels:
+    managed-by: argocd
+---
+# Database Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+  labels:
+    managed-by: argocd
+    purpose: data-storage
