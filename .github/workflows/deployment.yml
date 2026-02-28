@@ -9,6 +9,9 @@ env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   IMAGE_REPO: amitchoudhary47/devops
 
+permissions:
+  contents: write
+
 jobs:
   # ──────────────────────────────────────
   # Build, Push & Update GitOps Manifests
