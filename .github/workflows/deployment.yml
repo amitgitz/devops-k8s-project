@@ -24,21 +24,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: npm
-          cache-dependency-path: |
-            apps/backend/package-lock.json
-            apps/frontend/package-lock.json
 
       - name: Lint Backend
         working-directory: apps/backend
         run: |
-          npm ci
+          npm install
           npm run lint
 
       - name: Lint Frontend
         working-directory: apps/frontend
         run: |
-          npm ci
+          npm install
           npm run lint
 
   test:
@@ -75,13 +71,13 @@ jobs:
           DB_NAME: postgres
           DB_PORT: 5432
         run: |
-          npm ci
+          npm install
           npm test
 
       - name: Test Frontend
         working-directory: apps/frontend
         run: |
-          npm ci
+          npm install
           npm test
 
       - name: Upload Coverage
