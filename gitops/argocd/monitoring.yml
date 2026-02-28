@@ -1,0 +1,291 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 65.1.0
+    helm:
+      valuesObject:
+        prometheus:
+          prometheusSpec:
+            retention: 7d
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  storageClassName: standard-rwo
+                  resources:
+                    requests:
+                      storage: 10Gi
+            resources:
+              requests:
+                memory: 512Mi
+                cpu: 250m
+              limits:
+                memory: 1Gi
+                cpu: 500m
+            serviceMonitorSelectorNilUsesHelmValues: false
+            podMonitorSelectorNilUsesHelmValues: false
+            ruleSelectorNilUsesHelmValues: false
+            additionalScrapeConfigs:
+              - job_name: kubernetes-pods
+                kubernetes_sd_configs:
+                  - role: pod
+                relabel_configs:
+                  - source_labels:
+                      [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                    action: keep
+                    regex: "true"
+                  - source_labels:
+                      [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                    action: replace
+                    target_label: __metrics_path__
+                    regex: (.+)
+                  - source_labels:
+                      [
+                        __address__,
+                        __meta_kubernetes_pod_annotation_prometheus_io_port,
+                      ]
+                    action: replace
+                    regex: ([^:]+)(?::\d+)?;(\d+)
+                    replacement: $1:$2
+                    target_label: __address__
+                  - source_labels: [__meta_kubernetes_namespace]
+                    action: replace
+                    target_label: namespace
+                  - source_labels: [__meta_kubernetes_pod_name]
+                    action: replace
+                    target_label: pod
+                  - source_labels: [__meta_kubernetes_pod_label_app]
+                    action: replace
+                    target_label: app
+
+        grafana:
+          enabled: true
+          adminPassword: devops-admin
+          persistence:
+            enabled: true
+            storageClassName: standard-rwo
+            size: 5Gi
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 250m
+          dashboardProviders:
+            dashboardproviders.yaml:
+              apiVersion: 1
+              providers:
+                - name: custom
+                  orgId: 1
+                  folder: Custom
+                  type: file
+                  disableDeletion: false
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/custom
+          dashboards:
+            custom:
+              cluster-health:
+                gnetId: 15757
+                revision: 37
+                datasource: Prometheus
+              node-exporter:
+                gnetId: 1860
+                revision: 37
+                datasource: Prometheus
+              kubernetes-pods:
+                gnetId: 6417
+                revision: 1
+                datasource: Prometheus
+          additionalDataSources:
+            - name: Loki
+              type: loki
+              url: http://loki.monitoring.svc.cluster.local:3100
+              access: proxy
+            - name: Jaeger
+              type: jaeger
+              url: http://jaeger-query.monitoring.svc.cluster.local:16686
+              access: proxy
+
+        alertmanager:
+          enabled: true
+          alertmanagerSpec:
+            resources:
+              requests:
+                memory: 64Mi
+                cpu: 50m
+              limits:
+                memory: 128Mi
+                cpu: 100m
+
+        kubeStateMetrics:
+          enabled: true
+        nodeExporter:
+          enabled: true
+        kubeApiServer:
+          enabled: true
+        kubeControllerManager:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        kubeProxy:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-loki
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki-stack
+    targetRevision: 2.10.2
+    helm:
+      valuesObject:
+        loki:
+          enabled: true
+          persistence:
+            enabled: true
+            storageClassName: standard-rwo
+            size: 10Gi
+          config:
+            limits_config:
+              retention_period: 168h
+            schema_config:
+              configs:
+                - from: "2024-01-01"
+                  store: boltdb-shipper
+                  object_store: filesystem
+                  schema: v11
+                  index:
+                    prefix: index_
+                    period: 24h
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 250m
+        promtail:
+          enabled: true
+          config:
+            clients:
+              - url: http://loki:3100/loki/api/v1/push
+            snippets:
+              pipelineStages:
+                - docker: {}
+                - json:
+                    expressions:
+                      level: level
+                      msg: msg
+                      timestamp: timestamp
+                - labels:
+                    level:
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 50m
+            limits:
+              memory: 128Mi
+              cpu: 100m
+        grafana:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-jaeger
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://jaegertracing.github.io/helm-charts
+    chart: jaeger
+    targetRevision: 3.3.1
+    helm:
+      valuesObject:
+        provisionDataStore:
+          cassandra: false
+          elasticsearch: false
+        allInOne:
+          enabled: true
+          image:
+            tag: "1.54"
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 250m
+          extraEnv:
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
+        storage:
+          type: memory
+        agent:
+          enabled: false
+        collector:
+          enabled: false
+        query:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-resources
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amitgitz/devops-assignment.git
+    targetRevision: main
+    path: gitops/monitoring
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

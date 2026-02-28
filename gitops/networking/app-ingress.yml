@@ -1,4 +1,3 @@
-# App Ingress — app.mailscale.online
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -26,13 +25,3 @@ spec:
                 name: frontend
                 port:
                   number: 80
----
-# Managed Certificate for app.mailscale.online
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-  name: app-cert
-  namespace: devops
-spec:
-  domains:
-    - app.mailscale.online

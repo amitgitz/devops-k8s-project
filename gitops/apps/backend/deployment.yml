@@ -1,4 +1,3 @@
-# Backend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -59,39 +58,3 @@ spec:
               port: 5000
             initialDelaySeconds: 5
             periodSeconds: 5
----
-# Backend Service
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend
-  namespace: devops
-  labels:
-    app: backend
-  annotations:
-    cloud.google.com/neg: '{"ingress": true}'
-spec:
-  selector:
-    app: backend
-  ports:
-    - port: 80
-      targetPort: 5000
----
-# Service Account
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: backend
-  namespace: devops
----
-# Secret for DB Credentials (devops namespace)
-apiVersion: v1
-kind: Secret
-metadata:
-  name: db-credentials
-  namespace: devops
-type: Opaque
-stringData:
-  username: "devops"
-  password: "devops"
-  host: "postgres.database.svc.cluster.local"

@@ -1,0 +1,98 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-namespaces
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amitgitz/devops-assignment.git
+    targetRevision: main
+    path: gitops/namespaces
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-backend
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amitgitz/devops-assignment.git
+    targetRevision: main
+    path: gitops/apps/backend
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-frontend
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amitgitz/devops-assignment.git
+    targetRevision: main
+    path: gitops/apps/frontend
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-database
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amitgitz/devops-assignment.git
+    targetRevision: main
+    path: gitops/database
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: database
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-networking
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amitgitz/devops-assignment.git
+    targetRevision: main
+    path: gitops/networking
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

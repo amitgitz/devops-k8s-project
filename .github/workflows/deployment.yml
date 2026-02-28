@@ -186,11 +186,11 @@ jobs:
 
       - name: Update Backend Image Tag
         run: |
-          sed -i "s|image: registry.reachinbox.xyz/test-scale/backend:.*|image: registry.reachinbox.xyz/test-scale/backend:${{ steps.set_git_hash.outputs.git_hash }}|" gitops/base/backend.yml
+          sed -i "s|image: registry.reachinbox.xyz/test-scale/backend:.*|image: registry.reachinbox.xyz/test-scale/backend:${{ steps.set_git_hash.outputs.git_hash }}|" gitops/apps/backend/deployment.yml
 
       - name: Update Frontend Image Tag
         run: |
-          sed -i "s|image: registry.reachinbox.xyz/test-scale/frontend:.*|image: registry.reachinbox.xyz/test-scale/frontend:${{ steps.set_git_hash.outputs.git_hash }}|" gitops/base/frontend.yml
+          sed -i "s|image: registry.reachinbox.xyz/test-scale/frontend:.*|image: registry.reachinbox.xyz/test-scale/frontend:${{ steps.set_git_hash.outputs.git_hash }}|" gitops/apps/frontend/deployment.yml
 
       - name: Generate Changelog
         id: changelog
@@ -220,6 +220,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add gitops/base/backend.yml gitops/base/frontend.yml CHANGELOG.md
+          git add gitops/apps/backend/deployment.yml gitops/apps/frontend/deployment.yml CHANGELOG.md
           git diff --staged --quiet || git commit -m "ci: deploy ${{ steps.set_git_hash.outputs.git_hash }} [skip ci]"
           git push
