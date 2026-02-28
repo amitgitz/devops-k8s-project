@@ -42,7 +42,6 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_REPO }}-backend:${{ steps.set_git_hash.outputs.git_hash }}
-            ${{ env.IMAGE_REPO }}-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -53,7 +52,6 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_REPO }}-frontend:${{ steps.set_git_hash.outputs.git_hash }}
-            ${{ env.IMAGE_REPO }}-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
