@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: registry.reachinbox.xyz/test-scale/frontend:latest
+          image: registry.reachinbox.xyz/test-scale/frontend:0cc8751
           ports:
             - containerPort: 80
           resources:

@@ -17,7 +17,7 @@ spec:
       serviceAccountName: backend
       containers:
         - name: api
-          image: registry.reachinbox.xyz/test-scale/backend:latest
+          image: registry.reachinbox.xyz/test-scale/backend:0cc8751
           ports:
             - containerPort: 5000
           env:
