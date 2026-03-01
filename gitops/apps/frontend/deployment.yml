@@ -13,6 +13,8 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+        - name: harbor-credentials
       containers:
         - name: web
           image: registry.reachinbox.xyz/test-scale/frontend:4c80426

@@ -13,6 +13,8 @@ spec:
       labels:
         app: backend
     spec:
+      imagePullSecrets:
+        - name: harbor-credentials
       serviceAccountName: backend
       containers:
         - name: api

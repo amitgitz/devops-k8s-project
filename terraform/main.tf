@@ -74,7 +74,7 @@ resource "google_container_cluster" "primary" {
 
   deletion_protection      = false
   remove_default_node_pool = true
-  initial_node_count       = 2
+  initial_node_count       = 5
 }
 
 # Node Pool
@@ -84,8 +84,8 @@ resource "google_container_node_pool" "primary_nodes" {
   cluster  = google_container_cluster.primary.name
 
   autoscaling {
-    min_node_count = 1
-    max_node_count = 3
+    min_node_count = 3
+    max_node_count = 7
   }
 
   node_config {
