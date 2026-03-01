@@ -104,7 +104,7 @@ resource "google_container_node_pool" "primary_nodes" {
 }
 
 resource "google_service_account" "gke_nodes" {
-  account_id   = "gke-dodo-nodes"
+  account_id   = "gke-devops-nodes"
   display_name = "GKE Node Service Account"
 }
 

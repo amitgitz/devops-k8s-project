@@ -1,4 +1,4 @@
-# DevOps GitOps Assignment - Comprehensive Setup
+# DevOps GitOps Project - Comprehensive Setup
 
 Welcome to the GitOps Operations Repository! This project provisions a scalable, secure Google Kubernetes Engine (GKE) environment, integrated with a fully functional CI/CD pipeline, GitOps deployment model (ArgoCD), and a robust, production-ready observability stack.
 
