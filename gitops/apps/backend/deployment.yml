@@ -21,7 +21,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
             privileged: false
-          image: registry.reachinbox.xyz/test-scale/backend:f719535
+          image: registry.reachinbox.xyz/test-scale/backend:aa91340
           ports:
             - containerPort: 5000
           volumeMounts:
