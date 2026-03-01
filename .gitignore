@@ -43,3 +43,14 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# ========================
+# Kuberentes Secrets & Keys
+# ========================
+*secret*.yaml
+*secret*.yml
+*-secret.yaml
+*-secret.yml
+*.pem
+*.key
+*.crt
