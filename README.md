@@ -61,12 +61,3 @@ For a detailed breakdown of the application workload architecture, see [docs/DEP
 └── terraform/               # GKE Infrastructure as Code
 ```
 
-## 🛠️ Bootstrapping the Cluster
-If deploying this cluster from scratch:
-1. Navigate to the `terraform/` directory and run `terraform apply`.
-2. Once the GKE cluster is online, install ArgoCD into the cluster:
-   `kubectl create namespace argocd`
-   `kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml`
-3. Apply the "App of Apps" manifest to kick off the GitOps sync:
-   `kubectl apply -f gitops/argocd/apps.yml`
-4. ArgoCD will naturally take over and deploy the networking layer, the databases, the monitoring stack, and finally the applications.
