@@ -18,12 +18,12 @@ spec:
       containers:
         - name: web
 <<<<<<< HEAD
-          image: registry.reachinbox.xyz/test-scale/frontend:8a461b7
+          image: registry.reachinbox.xyz/test-scale/frontend:f719535
 =======
           securityContext:
             readOnlyRootFilesystem: true
             privileged: false
-          image: registry.reachinbox.xyz/test-scale/frontend:aa637f0
+          image: registry.reachinbox.xyz/test-scale/frontend:f719535
 >>>>>>> 03fd77a (feat(security): enforce readOnlyRootFilesystem and non-privileged containers)
           ports:
             - containerPort: 80

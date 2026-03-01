@@ -1,3 +1,18 @@
+## Changelog — f719535
+
+**Date:** 2026-03-01 10:39 UTC
+
+- chore: remove old backend deployment manifest (f719535)
+- fix(manifests): add missing ArgoCD apps and analysis template (4727c06)
+- feat(security): enforce readOnlyRootFilesystem and non-privileged containers (e108cb4)
+- ci: deploy 8a461b7 [skip ci] (0f5cbec)
+- changes (8a461b7)
+- ci: deploy aa637f0 [skip ci] (30a5bba)
+- fix: set VITE_API_URL as Docker build ARG to bust cache (aa637f0)
+- ci: deploy 895bd39 [skip ci] (3fd68fd)
+- fix: use relative /api URL for frontend, add imagePullSecrets to deployments (895bd39)
+- refactor: restructure gitops directory - split manifests into separate files [skip ci] (b1a195d)
+
 ## Changelog — 8a461b7
 
 **Date:** 2026-03-01 10:01 UTC
