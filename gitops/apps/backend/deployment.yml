@@ -1,24 +1,10 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: backend
   namespace: devops
 spec:
   replicas: 2
-  strategy:
-    canary:
-      analysis:
-        templates:
-          - templateName: success-rate
-        args:
-          - name: service-name
-            value: backend
-      steps:
-        - setWeight: 20
-        - pause: { duration: 1m } # Pause for 1 minute before advancing
-        - setWeight: 50
-        - pause: { duration: 1m }
-  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: backend
@@ -61,8 +47,6 @@ spec:
               value: "devops"
             - name: DB_PORT
               value: "5432"
-            - name: ROLLOUT_TEST
-              value: "trigger-1"
           resources:
             requests:
               memory: "128Mi"
