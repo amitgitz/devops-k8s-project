@@ -17,9 +17,19 @@ spec:
         - name: harbor-credentials
       containers:
         - name: web
+          securityContext:
+            readOnlyRootFilesystem: true
+            privileged: false
           image: registry.reachinbox.xyz/test-scale/frontend:aa637f0
           ports:
             - containerPort: 80
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
           resources:
             requests:
               memory: "64Mi"
@@ -39,3 +49,10 @@ spec:
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}

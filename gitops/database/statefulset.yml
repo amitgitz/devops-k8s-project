@@ -19,6 +19,9 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: postgres
+          securityContext:
+            readOnlyRootFilesystem: true
+            privileged: false
           image: postgres:16-alpine
           ports:
             - containerPort: 5432
@@ -47,6 +50,10 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+            - name: postgres-run
+              mountPath: /var/run/postgresql
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
               memory: "256Mi"
@@ -68,6 +75,11 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 3
             failureThreshold: 3
+      volumes:
+        - name: postgres-run
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: postgres-data
