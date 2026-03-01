@@ -1,0 +1,87 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: backend
+  namespace: devops
+spec:
+  replicas: 2
+  strategy:
+    canary:
+      analysis:
+        templates:
+          - templateName: success-rate
+        args:
+          - name: service-name
+            value: backend
+      steps:
+        - setWeight: 20
+        - pause: { duration: 1m } # Pause for 1 minute before advancing
+        - setWeight: 50
+        - pause: { duration: 1m }
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+        - name: harbor-credentials
+      serviceAccountName: backend
+      containers:
+        - name: api
+          securityContext:
+            readOnlyRootFilesystem: true
+            privileged: false
+          image: registry.reachinbox.xyz/test-scale/backend:aa637f0
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: host
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
+            - name: DB_NAME
+              value: "devops"
+            - name: DB_PORT
+              value: "5432"
+            - name: ROLLOUT_TEST
+              value: "trigger-1"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: tmp
+          emptyDir: {}
