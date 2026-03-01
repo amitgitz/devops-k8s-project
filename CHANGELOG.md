@@ -1,3 +1,18 @@
+## Changelog — 0349b74
+
+**Date:** 2026-03-01 11:14 UTC
+
+- changes (0349b74)
+- chore(security): remove tracked terraform lock file (b3e835b)
+- changes (fc7f31b)
+- chore(security): remove tracked terraform state backups (0645615)
+- chore(security): ignore all terraform state files and backups (292ac6f)
+- chore(security): remove secrets from repo and provide templates (48d4ff4)
+- ci: deploy aa91340 [skip ci] (f33f15a)
+- changes (aa91340)
+- changs (4533140)
+- changs (abb56c0)
+
 ## Changelog — aa91340
 
 **Date:** 2026-03-01 10:53 UTC
