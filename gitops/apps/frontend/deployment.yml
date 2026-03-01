@@ -17,7 +17,7 @@ spec:
         - name: harbor-credentials
       containers:
         - name: web
-          image: registry.reachinbox.xyz/test-scale/frontend:4c80426
+          image: registry.reachinbox.xyz/test-scale/frontend:895bd39
           ports:
             - containerPort: 80
           resources:
