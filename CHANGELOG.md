@@ -1,3 +1,18 @@
+## Changelog — 9fc0b7e
+
+**Date:** 2026-03-01 16:55 UTC
+
+- Update README.md (9fc0b7e)
+- ci: deploy 6d97106 [skip ci] (4346745)
+- Merge branch 'main' of https://github.com/amitgitz/devops-assignment (6d97106)
+- changes (6ad61e8)
+- ci: deploy 0349b74 [skip ci] (392c3d4)
+- changes (0349b74)
+- chore(security): remove tracked terraform lock file (b3e835b)
+- changes (fc7f31b)
+- chore(security): remove tracked terraform state backups (0645615)
+- chore(security): ignore all terraform state files and backups (292ac6f)
+
 ## Changelog — 6d97106
 
 **Date:** 2026-03-01 11:25 UTC
